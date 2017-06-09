@@ -21,6 +21,7 @@
             <td>
                 <?=\yii\bootstrap\Html::a('修改',['article/edit','id'=>$articles->id],['class'=>'btn btn-warning btn-xs']) ?>
                 <?=\yii\bootstrap\Html::a('删除',['article/del','id'=>$articles->id],['class'=>'btn btn-danger btn-xs']) ?>
+                <?=\yii\bootstrap\Html::a('查看',['article/detail','id'=>$articles->id],['class'=>'btn btn-success btn-xs']) ?>
             </td>
         </tr>
     <?php endforeach; ?>

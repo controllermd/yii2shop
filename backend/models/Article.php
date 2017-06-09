@@ -17,10 +17,11 @@ class Article extends ActiveRecord
     public function getArticle_category(){
         return $this->hasOne(Article_category::className(),['id'=>'article_category_id']);
     }
+    public $content;
     public function rules()
     {
         return [
-            [['name','intro','sort','article_category_id'],'required'],
+            [['name','intro','sort','article_category_id','content'],'required'],
             [['sort', 'status'], 'integer']
         ];
     }
@@ -31,7 +32,8 @@ class Article extends ActiveRecord
             'intro'=>'简介',
             'article_category_id'=>'分类',
             'sort'=>'排序',
-            'status'=>'状态'
+            'status'=>'状态',
+            'content'=>'文章详情'
         ];
     }
 }

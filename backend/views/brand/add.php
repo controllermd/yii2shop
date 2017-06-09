@@ -38,7 +38,7 @@ EOF
     ]
 ]);
 if($brand->logo){
-    echo \yii\helpers\Html::img('@web'.$brand->logo,['id'=>'img_logo','height'=>'50']);
+    echo \yii\helpers\Html::img($brand->logo,['id'=>'img_logo','height'=>'50']);
 }else{
     echo \yii\helpers\Html::img('',['style'=>'display:none','id'=>'img_logo','height'=>'50']);
 }

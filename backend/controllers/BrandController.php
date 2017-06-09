@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\Request;
 use yii\web\UploadedFile;
 use xj\uploadify\UploadAction;
+use crazyfd\qiniu\Qiniu;
 
 class BrandController extends Controller
 {
@@ -50,11 +51,16 @@ class BrandController extends Controller
                 'afterValidate' => function (UploadAction $action) {},
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
-                    $action->output['fileUrl'] = $action->getWebUrl();
-                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
+                    $imgUrl = $action->getWebUrl();
+                    $qiniu = \Yii::$app->qiniu;
+                    $qiniu->uploadFile(\Yii::getAlias('@webroot').$imgUrl,$imgUrl);
+                    //获取7牛云的地址
+                    $url = $qiniu->getLink($imgUrl);
+                    $action->output['fileUrl'] = $url;
+                    /*$action->getFilename(); // "image/yyyymmddtimerand.jpg"
                     $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
                     $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
-                },
+                */},
             ],
         ];
     }
@@ -136,5 +142,17 @@ class BrandController extends Controller
         $brand->save(false);
         return $this->redirect(['brand/index']);
     }
+    public function actionTest(){
+        $ak = 'lx0qNrgv00Im5b4AWC8Q4ahNtdpWV0qxWs4QXYpO';
+        $sk = 'iXZKSJjyFRsS30NAULviOQSP90y6LCWRs7-C638o';
+        $domain = 'http://or9r79bc4.bkt.clouddn.com/';
+        $bucket = 'yii2';
+        $qiniu = new Qiniu($ak, $sk,$domain, $bucket);
+        //要上传的文件
+        $fileName = \Yii::getAlias('@webroot').'/upload/test.jpg';
+        $key = 'test.jpg';
+        $rs = $qiniu->uploadFile($fileName,$key);
 
+        $url = $qiniu->getLink($key);var_dump($url);
+    }
 }
