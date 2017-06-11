@@ -21,7 +21,7 @@ class Article extends ActiveRecord
     public function rules()
     {
         return [
-            [['name','intro','sort','article_category_id','content'],'required'],
+            [['name','intro','sort','article_category_id'],'required'],
             [['sort', 'status'], 'integer']
         ];
     }

@@ -36,15 +36,15 @@ class ArticleController extends Controller
         $article_categorys = Article_category::find()->all();
         $request = new Request();
         if($request->isPost){
+            //这里就把表单里面的数据接收了，下面不需要再赋值
             $article->load($request->post());
             $article_detail->load($request->post());
-            if($article->validate()){
+            //var_dump($article_detail,$article);exit;
+            if($article->validate() && $article_detail->validate()){
                 $article->create_time=time();
-                $article->save();
+                $res = $article->save();
                 $article_detail->article_id = $article->id;
-                $article_detail->content = $article->content;
                 $article_detail->save();
-                //var_dump($articlex);exit;
                 return $this->redirect(['article/index']);
             }
         }
@@ -55,16 +55,16 @@ class ArticleController extends Controller
 
         $article = Article::findOne(['id'=>$id]);
         $article_detail = Article_detail::findOne(['article_id'=>$id]);
-        //$article = array_merge($article,$article_detail);
         $article_categorys = Article_category::find()->all();
         $request = new Request();
         if($request->isPost){
             $article->load($request->post());
-            if($article->validate()){
+            $article_detail->load($request->post());
+            if($article->validate() && $article_detail->validate()){
                 $article->create_time=time();
-                $article_detail->content = $article->content;
-
                 $article->save();
+                $article_detail->save();
+                //var_dump($article->getErrors());exit;
                 return $this->redirect(['article/index']);
             }
         }
@@ -81,5 +81,13 @@ class ArticleController extends Controller
         $article = Article::findOne(['id'=>$id]);
         $articled = Article_detail::findOne(['article_id'=>$article->id]);
         return $this->render('detail',['articled'=>$articled]);
+    }
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
     }
 }
