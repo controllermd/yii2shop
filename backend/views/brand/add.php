@@ -1,6 +1,7 @@
 <?php
 use yii\web\JsExpression;
 use xj\uploadify\Uploadify;
+
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($brand,'name');
 echo $form->field($brand,'intro')->textarea();

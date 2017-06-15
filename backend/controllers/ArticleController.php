@@ -56,6 +56,8 @@ class ArticleController extends Controller
         $article = Article::findOne(['id'=>$id]);
         $article_detail = Article_detail::findOne(['article_id'=>$id]);
         $article_categorys = Article_category::find()->all();
+        //可以用
+        //$article_detail = $article->Article
         $request = new Request();
         if($request->isPost){
             $article->load($request->post());

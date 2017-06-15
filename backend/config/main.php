@@ -19,8 +19,10 @@ return [
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
+            'loginUrl'=>['user/login'],//配置默认登录界面
+            'identityClass' => 'backend\models\User',
+            'enableAutoLogin' => true,//自动登录
+            'authTimeout'=>3600*7*24,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
         'session' => [

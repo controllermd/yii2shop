@@ -6,7 +6,6 @@ use backend\models\Brand;
 use yii\data\Pagination;
 use yii\web\Controller;
 use yii\web\Request;
-use yii\web\UploadedFile;
 use xj\uploadify\UploadAction;
 use crazyfd\qiniu\Qiniu;
 
