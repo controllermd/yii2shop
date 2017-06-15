@@ -12,9 +12,8 @@
     <tr>
         <td><?=$brands->id?></td>
         <td><?=$brands->name?></td>
-        <td><?=$brands->intro?></td>
+        <?php var_dump($brands->logo?$brands->logo:null) ?>
         <td><?=$brands->logo?\yii\bootstrap\Html::img($brands->logo,['width'=>100]):null?></td>
-        <td><?=$brands->sort?></td>
         <td><?=\backend\models\Brand::$statusOption[$brands->status]?></td>
         <td>
             <?=\yii\bootstrap\Html::a('修改',['brand/edit','id'=>$brands->id],['class'=>'btn btn-warning btn-xs']) ?>
