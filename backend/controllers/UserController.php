@@ -8,6 +8,7 @@ use yii\web\Request;
 
 class UserController extends \yii\web\Controller
 {
+    
     public function actionIndex()
     {
         $admins = User::find()->all();

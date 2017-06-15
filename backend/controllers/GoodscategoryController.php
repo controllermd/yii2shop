@@ -24,7 +24,7 @@ class GoodscategoryController extends \yii\web\Controller
         $model = new Goods_category();
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             //判断panent_id是否为空，如果为空就添加一级
-            var_dump($model->parent_id);exit;
+            //var_dump($model->parent_id);exit;
             if($model->parent_id){
                 //添加父类下一级目录
                 $parent = Goods_category::findOne(['id'=>$model->parent_id]);
