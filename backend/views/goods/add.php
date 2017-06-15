@@ -4,7 +4,7 @@ use xj\uploadify\Uploadify;
 use kartik\select2\Select2;
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($goods,'name');
-echo $form->field($goods,'sn');
+/*echo $form->field($goods,'sn')->textInput(['class'=>'disabled']);*/
 /*//$data是键值对数组哦，key-value ,下面所声明的所有$data均为键值对数组，以该数组为例
 $data = [2 => 'widget', 3 => 'dropDownList', 4 => 'yii2'];
 echo $form->field($goods, 'title')->widget(Select2::className(), [
