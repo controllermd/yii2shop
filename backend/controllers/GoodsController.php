@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\RbacFilter;
 use backend\models\Brand;
 use backend\models\Goods;
 use backend\models\Goods_category;
@@ -17,6 +18,15 @@ use yii\web\Request;
 class GoodsController extends \yii\web\Controller
 {
 
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','edit','del'],
+            ]
+        ];
+    }
     public function actionIndex()
     {
         /*$key = isset($_GET['key'])?$_GET['key']:'';
@@ -27,7 +37,7 @@ class GoodsController extends \yii\web\Controller
         $goods->search($quest);
         $page = new Pagination([
             'totalCount'=>$quest->count(),
-            'pageSize'=>1
+            'pageSize'=>10
         ]);
 
         $models = $quest->limit($page->limit)->offset($page->offset)->all();

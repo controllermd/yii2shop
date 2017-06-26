@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 
+use backend\components\RbacFilter;
 use backend\models\Article_category;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -16,6 +17,15 @@ use yii\web\Request;
 
 class ArticlecategoryController extends Controller
 {
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
     //显示
     public function actionIndex(){
         //获取所有信息

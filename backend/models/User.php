@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\rbac\Role;
 use yii\web\IdentityInterface;
 /**
  * This is the model class for table "user".
@@ -35,7 +37,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public $password2;
     public $code;
     public $cookie;
+    public $description;
+    public $role=[];
     public static $statusOption = [1=>'正常',2=>'未启用',0=>'删除'];
+    //获取所有权限
+    public static function getRole(){
+        $authManager = \Yii::$app->authManager;
+        return ArrayHelper::map($authManager->getRoles(),'name','description');
+    }
+    public function getRoleone(){
+        return $this->hasMany(Role::className(),['name'=>'username']);
+    }
     public function rules()
     {
         return [
@@ -46,7 +58,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             ['password2','compare','compareAttribute'=>'password_hash','message'=>'前后密码要一致','on'=>['add']],
             ['username','validateUsername','on'=>['login']],
             ['cookie','safe'],
-            ['username','unique','on'=>['add']]
+            ['username','unique','on'=>['add']],
+            ['role','safe']
         ];
     }
 
@@ -61,7 +74,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'password2'=>'确认密码',
             'status' => '状态',
             'code'=>'验证码',
-            'cookie'=>'自动登录'
+            'cookie'=>'自动登录',
+            'role'=>'添加角色'
         ];
     }
     public function validateUsername(){
@@ -79,6 +93,30 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         }else{
             //账号不存在，添加错误
             $this->addError('username','账号或者密码错误');
+        }
+    }
+    public function addRole($id){
+        $authManager = \Yii::$app->authManager;
+        foreach ($this->role as $roleName){
+            $role = $authManager->getRole($roleName);
+            if($role){
+                $authManager->assign($role,$id);
+            }
+        }
+    }
+    public function updateRole($id){
+        $authManager = \Yii::$app->authManager;
+        $authManager->revokeAll($id);
+        foreach ($this->role as $roleName) {
+            $role = $authManager->getRole($roleName);
+            if ($role) {
+                $authManager->assign($role, $id);
+            }
+        }
+    }
+    public function loadData($id){
+        foreach (\Yii::$app->authManager->getRolesByUser($id) as $role){
+            $this->role[] = $role->name;
         }
     }
     /**
@@ -151,6 +189,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function generateAuthKey()
     {
         //生成一个随机字符串
-        $this->auth_key = Yii::$app->security->generateRandomString();
+       return $this->auth_key = Yii::$app->security->generateRandomString();
     }
 }

@@ -21,9 +21,7 @@ class Img extends \yii\db\ActiveRecord
         return 'img';
     }
 
-    public function getGoods(){
-        return $this->hasOne(Goods::className(),['id'=>'goods_id']);
-    }
+    
     /**
      * @inheritdoc
      */

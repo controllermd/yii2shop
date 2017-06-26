@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\RbacFilter;
 use backend\models\Goods_category;
 
 use yii\helpers\ArrayHelper;
@@ -10,6 +11,15 @@ use yii\web\NotFoundHttpException;
 
 class GoodscategoryController extends \yii\web\Controller
 {
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
     public function actionIndex()
     {
         $model = Goods_category::find()->orderBy('tree,lft')->all();

@@ -2,13 +2,23 @@
 
 namespace backend\controllers;
 
+use backend\components\RbacFilter;
 use backend\models\ReviseForm;
 use backend\models\User;
 use yii\web\Request;
 
 class UserController extends \yii\web\Controller
 {
-    
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
         $admins = User::find()->all();
@@ -23,6 +33,9 @@ class UserController extends \yii\web\Controller
                 $admin->password_hash = \Yii::$app->security->generatePasswordHash($admin->password_hash);
                 \Yii::$app->session->setFlash('success','添加成功');
                 $admin->save(false);
+                $id = $admin->id;
+                $admin->addRole($id);
+                //var_dump($a);exit();
                 return $this->redirect(['user/login']);
             }
         }
@@ -32,9 +45,13 @@ class UserController extends \yii\web\Controller
         $admin = User::findOne(['id'=>$id]);//['scenario'=>Admin::SCENARIO_ADD]
         $admin->setScenario('edit');
         $request = new Request();
+        $admin->loadData($id);
+
         //var_dump($admin);exit;
         if($request->isPost){
+
             $admin->load($request->post());
+            $admin->updateRole($id);
             //var_dump($admin->username);exit();
             if($admin->validate()){
                 //var_dump($admin);exit;

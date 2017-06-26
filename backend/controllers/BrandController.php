@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\RbacFilter;
 use backend\models\Brand;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -11,6 +12,15 @@ use crazyfd\qiniu\Qiniu;
 
 class BrandController extends Controller
 {
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
     //插件
     public function actions() {
         return [

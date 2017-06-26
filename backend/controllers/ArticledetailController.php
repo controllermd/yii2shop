@@ -15,6 +15,7 @@ use yii\web\Request;
 
 class ArticledetailController extends Controller
 {
+    
     public function actionIndex(){
         $articel = Article_detail::find()->all();
         return $this->render('index',['article'=>$articel]);

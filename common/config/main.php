@@ -5,5 +5,8 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'authManager'=>[//认证权限
+            'class'=>\yii\rbac\DbManager::className(),
+        ],
     ],
 ];

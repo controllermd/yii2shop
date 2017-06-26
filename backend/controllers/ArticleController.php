@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 
+use backend\components\RbacFilter;
 use backend\models\Article;
 use backend\models\Article_category;
 use backend\models\Article_detail;
@@ -18,6 +19,15 @@ use yii\web\Request;
 
 class ArticleController extends Controller
 {
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
     //显示
     public function actionIndex(){
         $quest = Article::find();

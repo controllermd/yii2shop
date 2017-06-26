@@ -2,15 +2,26 @@
 
 namespace backend\controllers;
 
+use backend\components\RbacFilter;
 use backend\models\Goods;
 use backend\models\Img;
 use xj\uploadify\UploadAction;
 
 class ImgController extends \yii\web\Controller
 {
+    //设置权限
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['add','index','edit','del'],
+            ]
+        ];
+    }
     public function actionIndex($id)
     {
         $goods = Goods::findOne(['id'=>$id]);
+
         return $this->render('index',['goods'=>$goods]);
     }
     //ajax删除图片
@@ -67,6 +78,7 @@ class ImgController extends \yii\web\Controller
                     $model->url = $action->getWebUrl();
                     $model->save();
                     $action->output['fileUrl'] = $model->url;
+                    $action->output['goods_id'] = $model->id;
                 },
             ],
             'upload' => [

@@ -20,4 +20,7 @@ class AppAsset extends AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
     ];
+    /*public $jsOptions = [//将js放入header运行，解决jq不存在未定义问题
+        'position' => \yii\web\View::POS_HEAD
+    ];*/
 }

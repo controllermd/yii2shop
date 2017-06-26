@@ -60,9 +60,18 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-default','sty
             <td><?=$good->sort?></td>
             <td><?=$good->create_time?></td>
             <td>
-                <?=\yii\bootstrap\Html::a('修改',['goods/edit','id'=>$good->id],['class'=>'btn btn-warning btn-xs']) ?>
-                <?=\yii\bootstrap\Html::a('删除',['goods/del','id'=>$good->id],['class'=>'btn btn-danger btn-xs']) ?>
-                <?=\yii\bootstrap\Html::a('查看相册',['img/index','id'=>$good->id],['class'=>'btn btn-success btn-xs']) ?>
+                <?php
+                $user = \Yii::$app->user;
+                if($user->can('goods/edit')){
+                    echo \yii\bootstrap\Html::a('修改',['goods/edit','id'=>$good->id],['class'=>'btn btn-warning btn-xs']);
+                }
+                if($user->can('goods/del')){
+                    echo \yii\bootstrap\Html::a('删除',['goods/del','id'=>$good->id],['class'=>'btn btn-danger btn-xs']);
+                }
+                if($user->can('img/index')){
+                    echo \yii\bootstrap\Html::a('查看相册',['img/index','id'=>$good->id],['class'=>'btn btn-success btn-xs']);
+                }
+                ?>
             </td>
         </tr>
     <?php endforeach;?>
