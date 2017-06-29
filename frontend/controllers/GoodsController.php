@@ -14,6 +14,7 @@ use frontend\models\Cart;
 use frontend\models\Goods;
 use frontend\models\Order;
 use frontend\models\OrderGoods;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
@@ -208,19 +209,45 @@ class GoodsController extends Controller
             $model->payment_name = $payment[$payment_id-1]['payment_name'];
             $model->status = 1;
             $model->total = $total;
-            $model->save();
-        $carts = Cart::find()->where(['member_id'=>$address->member_id])->all();
-        foreach ($carts as $cart){
-            $model1 = new OrderGoods();
-            $model1->goods_id = $cart->goods_id;
-            $model1->goods_name = $cart->goodsinfo->name;
-            $model1->amount = $cart->amount;
-            $model1->logo = $cart->goodsinfo->logo;
-            $model1->price = $cart->goodsinfo->shop_price;
-            $model1->total = $cart->amount*$cart->goodsinfo->shop_price;
-            $model1->order_id = $model->id;
-            $model1->save();
-        }
+            //事务回滚
+            $trancaction = \Yii::$app->db->beginTransaction();
+            try{
+
+                $model->save();
+                //提交
+                $carts = Cart::find()->where(['member_id'=>$address->member_id])->all();
+
+                foreach ($carts as $cart){
+                    $goods = Goods::findOne(['id'=>$cart->goods_id,'status'=>1]);
+
+                    if($goods==null){
+                        throw  new Exception('商品不存在');
+                    }
+
+                    //如果需要的数量大于库存
+                    if ($cart->amount > $goods->stock){
+                        throw new Exception('商品的数量不够');
+                    }
+                    $model1 = new OrderGoods();
+                    $model1->goods_id = $cart->goods_id;
+                    $model1->goods_name = $cart->goodsinfo->name;
+                    $model1->amount = $cart->amount;
+                    $model1->logo = $cart->goodsinfo->logo;
+                    $model1->price = $cart->goodsinfo->shop_price;
+                    $model1->total = $cart->amount*$cart->goodsinfo->shop_price;
+                    $model1->order_id = $model->id;
+                    $model1->save();
+                    $goods = Goods::findOne(['id'=>$model1->goods_id]);//扣除相应的数量
+                    $goods->stock = $goods->stock-$model1->amount;
+                    $goods->save(false);
+                }
+                $trancaction->commit();
+                Cart::deleteAll(['member_id'=>\Yii::$app->user->id]);//因为他是一个数组，不能用对象里面的方法，直接用模型调用方法
+
+            }catch (Exception $e){
+                $trancaction->rollBack();
+                //回滚
+            }
     }
     public function actionCat3(){
         $this->layout = 'cat3';
@@ -241,5 +268,17 @@ class GoodsController extends Controller
         $model->status = 0;
         $model->save(false);
         return $this->redirect(['goods/orderlist']);
+    }
+
+    //清除超时未付款的订单
+    public function actionClear(){
+        $models = Order::find()->where(['status'=>1])->andWhere(['<','create_time',time()-3600])->all();
+        foreach ($models as $model){
+            $model->status = 0;
+            $model->save();
+            foreach ($model->ordergoods as $good){
+                Goods::updateAllCounters(['stock'=>$good->amount,'id'=>$good->goods_id]);
+            }
+        }
     }
 }

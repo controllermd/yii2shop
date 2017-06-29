@@ -194,8 +194,8 @@
                     <dd class="cur"><a href="">不限</a></dd>
                     <?php
                         foreach ($models as $model):
-
-                            echo '<dd>'.\yii\helpers\Html::a($model->name,['']).'</dd>';
+                            
+                            echo '<dd>'.\yii\helpers\Html::a($model->name).'</dd>';
                         endforeach;
                     ?>
                 </dl>

@@ -207,8 +207,8 @@ $this->registerJs(new \yii\web\JsExpression(
         var address_id = $("input[name='address_id']:checked").val();
         var delivery_id = $("input[name=delivery]:checked").val();
         var payment_id = $("input[name=pay]:checked").val();
-        $.post("$url",{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id,total:total.substring(5),"_csrf-frontend":"$csrf"},function (res){
-            document.location.href="$url2";
+        $.post("$url",{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id,total:total.substring(5),"_csrf-frontend":"$csrf"},function (){
+            //document.location.href="$url2";
         })
     });
 JS
