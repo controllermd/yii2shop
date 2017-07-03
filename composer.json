@@ -25,7 +25,8 @@
         "kartik-v/yii2-widget-select2": "@dev",
         "chenkby/yii2-region": "dev-master",
         "flc/alidayu": "^2.0",
-        "yiisoft/yii2-redis": "~2.0.0"
+        "yiisoft/yii2-redis": "~2.0.0",
+        "overtrue/wechat": "^3.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -45,13 +45,14 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-default','sty
         <th>操作</th>
     </tr>
     <?php foreach ($models as $good): ?>
+
         <tr>
             <td><?=$good->id?></td>
             <td><?=$good->name?></td>
             <td><?=$good->sn?></td>
             <td><?=\yii\bootstrap\Html::img($good->logo)?></td>
             <td><?=$good->parent?$good->parent->name:'没有分类'?></td>
-            <td><?=$good->brand->name?></td>
+            <td><?=$good->brand?$good->brand->name:''?></td>
             <td><?=$good->market_price?></td>
             <td><?=$good->shop_price?></td>
             <td><?=$good->stock?></td>
